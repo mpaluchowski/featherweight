@@ -24,14 +24,14 @@ class Base {
 	}
 
 	public function run() {
-		$pageFile = $this->config['directory_pages'];
+		$pageFile = $this->getPage();
 
 		if ($this->config['languages_available']){
-			$pageFile .= $this->getLanguage() . '-';
+			$pageFile = $this->getLanguage() . '-' . $pageFile;
 		}
 
-		include $pageFile
-				. $this->config['page_default']
+		include $this->config['directory_pages']
+				. $pageFile
 				. '.php';
 	}
 
@@ -40,6 +40,25 @@ class Base {
 		foreach ($config as $key => $value) {
 			$this->config[$key] = $value;
 		}
+	}
+
+	private function getPage() {
+		$url = parse_url($_SERVER['REQUEST_URI']);
+		$url['path'] = ltrim( $url['path'], '/' );
+
+		if (!empty($url['path'])) {
+			foreach ($this->config['pages_available'] as $language => $pages) {
+				if (array_key_exists($url['path'], $pages)) {
+					setcookie('lang', $language);
+					$thisPage = $this->config['pages_available'][$language][$url['path']]['name'];
+					break;
+				}
+			}
+		}
+
+		return empty( $url['path'] ) || !isset( $thisPage )
+				? $this->config['page_default']
+				: $thisPage;
 	}
 
 	private function getLanguage() {
