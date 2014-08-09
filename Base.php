@@ -27,6 +27,13 @@ class Base {
 				. '.php';
 	}
 
+	public function config($file) {
+		$config = include $file;
+		foreach ($config as $key => $value) {
+			$this->config[$key] = $value;
+		}
+	}
+
 }
 
 return Base::instance();
