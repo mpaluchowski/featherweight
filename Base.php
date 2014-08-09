@@ -24,10 +24,13 @@ class Base {
 	}
 
 	public function run() {
-		$pageFile = $this->getPage();
+		$page = $this->getPage();
 
-		if ($this->config['languages_available']){
-			$pageFile = $this->getLanguage() . '-' . $pageFile;
+		$pageFile = $page['name'];
+
+		if ($this->config['languages_available']) {
+			$pageFile = $this->getLanguage($page['language'])
+					. '-' . $pageFile;
 		}
 
 		include $this->config['directory_pages']
@@ -49,20 +52,24 @@ class Base {
 		if (!empty($url['path'])) {
 			foreach ($this->config['pages_available'] as $language => $pages) {
 				if (array_key_exists($url['path'], $pages)) {
-					setcookie('lang', $language);
-					$thisPage = $this->config['pages_available'][$language][$url['path']]['name'];
-					break;
+					return [
+						'name' => $this->config['pages_available'][$language][$url['path']],
+						'language' => $language,
+						];
 				}
 			}
 		}
 
-		return empty( $url['path'] ) || !isset( $thisPage )
-				? $this->config['page_default']
-				: $thisPage;
+		return [
+			'name' => $this->config['page_default'],
+			'language' => null
+			];
 	}
 
-	private function getLanguage() {
-		if (isset($_GET['lang'])
+	private function getLanguage($language) {
+		if (null !== $language) {
+			setcookie('lang', $language);
+		} else if (isset($_GET['lang'])
 				&& in_array($_GET['lang'], $this->config['languages_available'], true)) {
 			setcookie('lang', $_GET['lang']);
 			$language = $_GET['lang'];
