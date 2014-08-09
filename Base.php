@@ -19,7 +19,7 @@ class Base {
 			'page_default' => 'home',
 			'directory_pages' => '/pages/',
 			'languages_available' => null,
-			'language_default' => null,
+			'language_default' => 'en',
 		];
 	}
 
