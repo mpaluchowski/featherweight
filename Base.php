@@ -17,6 +17,8 @@ class Base {
 	private function __construct() {
 		$this->config = [
 			'page_default' => 'home',
+			'page_include_before' => [],
+			'page_include_after' => [],
 			'directory_pages' => '/pages/',
 			'languages_available' => null,
 			'language_default' => 'en',
@@ -26,16 +28,31 @@ class Base {
 	public function run() {
 		$page = $this->getPage();
 
+		$prefix = '';
 		$pageFile = $page['name'];
 
 		if ($this->config['languages_available']) {
-			$pageFile = $this->getLanguage($page['language'])
-					. '-' . $pageFile;
+			$prefix = $this->getLanguage($page['language']) . '-';
+		}
+
+		foreach ($this->config['page_include_before'] as $inclusion) {
+			include $this->config['directory_pages']
+					. $prefix
+					. $inclusion
+					. '.php';
 		}
 
 		include $this->config['directory_pages']
+				. $prefix
 				. $pageFile
 				. '.php';
+
+		foreach ($this->config['page_include_after'] as $inclusion) {
+			include $this->config['directory_pages']
+					. $prefix
+					. $inclusion
+					. '.php';
+		}
 	}
 
 	public function config($file) {
