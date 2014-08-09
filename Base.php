@@ -2,6 +2,9 @@
 
 class Base {
 
+	private
+		$config;
+
 	public static function instance() {
 		static $inst = null;
 		if ($inst === null)
@@ -9,8 +12,20 @@ class Base {
 		return $inst;
 	}
 
-	private function __construct() {}
 	private function __clone() {}
+
+	private function __construct() {
+		$this->config = [
+			'page_default' => 'home',
+			'directory_pages' => '/pages/',
+		];
+	}
+
+	public function run() {
+		include $this->config['directory_pages']
+				. $this->config['page_default']
+				. '.php';
+	}
 
 }
 
