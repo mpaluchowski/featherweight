@@ -104,7 +104,7 @@ class Base {
 			}
 		}
 
-		if (!isset($language))
+		if (!$language)
 			$language = $this->config['language_default'];
 
 		return $language;
