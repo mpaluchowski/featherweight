@@ -18,11 +18,19 @@ class Base {
 		$this->config = [
 			'page_default' => 'home',
 			'directory_pages' => '/pages/',
+			'languages_available' => null,
+			'language_default' => null,
 		];
 	}
 
 	public function run() {
-		include $this->config['directory_pages']
+		$pageFile = $this->config['directory_pages'];
+
+		if ($this->config['languages_available']){
+			$pageFile .= $this->getLanguage() . '-';
+		}
+
+		include $pageFile
 				. $this->config['page_default']
 				. '.php';
 	}
@@ -32,6 +40,48 @@ class Base {
 		foreach ($config as $key => $value) {
 			$this->config[$key] = $value;
 		}
+	}
+
+	private function getLanguage() {
+		if (isset($_GET['lang'])
+				&& in_array($_GET['lang'], $this->config['languages_available'], true)) {
+			setcookie('lang', $_GET['lang']);
+			$language = $_GET['lang'];
+		} else  if (isset($_COOKIE['lang'])
+				&& in_array($_COOKIE['lang'], $this->config['languages_available'], true)) {
+			/* Adhere to preference */
+			$language = $_COOKIE['lang'];
+		} else {
+			/* Content negotiation */
+			preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $acceptedLangsParse);
+
+			if (count($acceptedLangsParse[1])) {
+				// create a list like "en" => 0.8
+				$acceptedLangs = array_combine(
+					preg_replace('/(\w{2})(-\w{2})?/i', '$1', $acceptedLangsParse[1]),
+					$acceptedLangsParse[4]
+				);
+
+				// set default to 1 for any without q factor
+				foreach ($acceptedLangs as $key => $val) {
+					if ($val === '') $acceptedLangs[$key] = 1;
+				}
+
+				// sort list based on value
+				arsort($acceptedLangs, SORT_NUMERIC);
+
+				foreach($acceptedLangs as $key => $val)
+				if (in_array($key, $this->config['languages_available'], true)) {
+					$language = $key;
+					break;
+				}
+			}
+		}
+
+		if (!isset($language))
+			$language = $this->config['language_default'];
+
+		return $language;
 	}
 
 }
