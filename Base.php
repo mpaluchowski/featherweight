@@ -27,6 +27,7 @@ class Base {
 
 	public function run() {
 		$page = $this->getPage();
+		$this->set('this_page', $page);
 
 		$prefix = '';
 		$pageFile = $page['name'];
@@ -43,6 +44,14 @@ class Base {
 		foreach ($config as $key => $value) {
 			$this->config[$key] = $value;
 		}
+	}
+
+	public function set($key, $value) {
+		$this->config[$key] = $value;
+	}
+
+	public function get($key) {
+		return $this->config[$key];
 	}
 
 	private function sandbox($prefix, $pageFile) {
