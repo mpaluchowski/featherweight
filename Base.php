@@ -20,9 +20,12 @@ class Base {
 			'page_include_before' => [],
 			'page_include_after' => [],
 			'directory_pages' => '/pages/',
+			'directory_extensions' => './ext/',
 			'languages_available' => null,
 			'language_default' => 'en',
 		];
+
+		$this->loadExtensions();
 	}
 
 	public function run() {
@@ -52,6 +55,19 @@ class Base {
 
 	public function get($key) {
 		return $this->config[$key];
+	}
+
+	private function loadExtensions() {
+		if (!is_dir($this->get('directory_extensions')))
+			return;
+
+		foreach (scandir($this->get('directory_extensions')) as $file) {
+			if (preg_match('/[A-Za-z0-9_\-]\.php/', $file)) {
+				include $this->get('directory_extensions') . '/' . $file;
+				$fileParts = explode('.', $file);
+				$this->set($fileParts[0], new $fileParts[0]($this));
+			}
+		}
 	}
 
 	private function sandbox($prefix, $pageFile) {
