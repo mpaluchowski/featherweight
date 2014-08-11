@@ -19,7 +19,7 @@ class Base {
 			'page_default' => 'home',
 			'page_include_before' => [],
 			'page_include_after' => [],
-			'directory_pages' => '/pages/',
+			'directory_pages' => './pages/',
 			'directory_extensions' => './ext/',
 			'languages_available' => null,
 			'language_default' => 'en',
