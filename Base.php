@@ -35,24 +35,7 @@ class Base {
 			$prefix = $this->getLanguage($page['language']) . '-';
 		}
 
-		foreach ($this->config['page_include_before'] as $inclusion) {
-			include $this->config['directory_pages']
-					. $prefix
-					. $inclusion
-					. '.php';
-		}
-
-		include $this->config['directory_pages']
-				. $prefix
-				. $pageFile
-				. '.php';
-
-		foreach ($this->config['page_include_after'] as $inclusion) {
-			include $this->config['directory_pages']
-					. $prefix
-					. $inclusion
-					. '.php';
-		}
+		echo $this->sandbox($prefix, $pageFile);
 	}
 
 	public function config($file) {
@@ -60,6 +43,32 @@ class Base {
 		foreach ($config as $key => $value) {
 			$this->config[$key] = $value;
 		}
+	}
+
+	private function sandbox($prefix, $pageFile) {
+		extract($this->config);
+		ob_start();
+
+		foreach ($this->config['page_include_before'] as $inclusion) {
+			require $this->config['directory_pages']
+					. $prefix
+					. $inclusion
+					. '.php';
+		}
+
+		require $this->config['directory_pages']
+				. $prefix
+				. $pageFile
+				. '.php';
+
+		foreach ($this->config['page_include_after'] as $inclusion) {
+			require $this->config['directory_pages']
+					. $prefix
+					. $inclusion
+					. '.php';
+		}
+
+		return ob_get_clean();
 	}
 
 	private function getPage() {
