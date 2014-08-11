@@ -36,7 +36,8 @@ class Base {
 		$pageFile = $page['name'];
 
 		if ($this->config['languages_available']) {
-			$prefix = $this->getLanguage($page['language']) . '-';
+			$this->set('language', $this->getLanguage($page['language']));
+			$prefix = $this->get('language') . '-';
 		}
 
 		echo $this->sandbox($prefix, $pageFile);
