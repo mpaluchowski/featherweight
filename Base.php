@@ -16,6 +16,7 @@ class Base {
 
 	private function __construct() {
 		$this->config = [
+			'protocol_force' => null,
 			'page_default' => 'home',
 			'page_include_before' => [],
 			'page_include_after' => [],
@@ -39,6 +40,8 @@ class Base {
 			$this->set('language', $this->getLanguage($page['language']));
 			$prefix = $this->get('language') . '-';
 		}
+
+		$this->set('canonical_url', $this->getCanonicalUrl($page['path']));
 
 		echo $this->sandbox($prefix, $pageFile);
 	}
@@ -97,6 +100,18 @@ class Base {
 		return ob_get_clean();
 	}
 
+	private function getCanonicalUrl($pagePath) {
+		return $this->get('protocol_force')
+				? $this->get('protocol_force')
+				: isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']
+						? 'https'
+						: 'http'
+			. '://'
+			. $_SERVER['HTTP_HOST']
+			. '/'
+			. $pagePath;
+	}
+
 	private function getPage() {
 		$url = parse_url($_SERVER['REQUEST_URI']);
 		$url['path'] = ltrim( $url['path'], '/' );
@@ -105,6 +120,7 @@ class Base {
 			foreach ($this->config['pages_available'] as $language => $pages) {
 				if (array_key_exists($url['path'], $pages)) {
 					return [
+						'path' => $url['path'],
 						'name' => $this->config['pages_available'][$language][$url['path']],
 						'language' => $language,
 						];
@@ -113,6 +129,7 @@ class Base {
 		}
 
 		return [
+			'path' => '',
 			'name' => $this->config['page_default'],
 			'language' => null
 			];
