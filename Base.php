@@ -26,11 +26,11 @@ class Base {
 			'languages_available' => null,
 			'language_default' => 'en',
 		];
-
-		$this->loadExtensions();
 	}
 
 	public function run() {
+		$this->loadExtensions();
+
 		$page = $this->getPage();
 		$this->set('this_page', $page['name']);
 		$this->set('title', $page['title']);
