@@ -65,7 +65,7 @@ class Base {
 
 	private function loadExtensions() {
 		if (!is_dir($this->get('directory_extensions')))
-			return;
+			throw new Exception("Cannot load extensions from '" . $this->get('directory_extensions') . "'. Doesn't appear to be a directory.");
 
 		foreach (scandir($this->get('directory_extensions')) as $file) {
 			if (preg_match('/[A-Za-z0-9_\-]\.php/', $file)) {
