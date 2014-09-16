@@ -18,6 +18,7 @@ class Base {
 		$this->config = [
 			'protocol_force' => null,
 			'page_default' => 'home',
+			'page_base' => '/',
 			'title_default' => '',
 			'page_include_before' => [],
 			'page_include_after' => [],
@@ -116,7 +117,7 @@ class Base {
 
 	private function getPage() {
 		$url = parse_url($_SERVER['REQUEST_URI']);
-		$url['path'] = ltrim( $url['path'], '/' );
+		$url['path'] = ltrim( $url['path'], $this->get('page_base') );
 
 		if (!empty($url['path'])) {
 			foreach ($this->config['pages_available'] as $language => $pages) {
