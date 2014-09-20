@@ -111,7 +111,7 @@ class Base {
 						: 'http'
 			. '://'
 			. $_SERVER['HTTP_HOST']
-			. '/'
+			. $this->get('page_base')
 			. $pagePath;
 	}
 
