@@ -17,6 +17,7 @@ class Base {
 	private function __construct() {
 		$this->config = [
 			'protocol_force' => null,
+			'pages_available' => [],
 			'page_default' => 'home',
 			'page_base' => '/',
 			'title_default' => '',
