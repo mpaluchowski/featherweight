@@ -20,7 +20,6 @@ class Base {
 			'pages_available' => [],
 			'page_default' => 'home',
 			'page_base' => '/',
-			'title_default' => '',
 			'page_include_before' => [],
 			'page_include_after' => [],
 			'directory_pages' => './pages/',
@@ -35,7 +34,6 @@ class Base {
 
 		$page = $this->getPage();
 		$this->set('this_page', $page['name']);
-		$this->set('title', $page['title']);
 
 		$prefix = '';
 		$pageFile = $page['name'];
@@ -125,8 +123,7 @@ class Base {
 				if (array_key_exists($url['path'], $pages)) {
 					return [
 						'path' => $url['path'],
-						'name' => $this->config['pages_available'][$language][$url['path']]['name'],
-						'title' => $this->config['pages_available'][$language][$url['path']]['title'],
+						'name' => $this->config['pages_available'][$language][$url['path']],
 						'language' => $language,
 						];
 				}
@@ -136,7 +133,6 @@ class Base {
 		return [
 			'path' => '',
 			'name' => $this->config['page_default'],
-			'title' => $this->config['title_default'],
 			'language' => null
 			];
 	}
