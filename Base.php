@@ -43,7 +43,9 @@ class Base {
 			$prefix = $this->get('language') . '-';
 		}
 
-		$this->set('canonical_url', $this->getCanonicalUrl($page['path']));
+		$this->set('url_canonical', $this->getCanonicalUrl($page['path']));
+		$this->set('url_root', $this->getRootUrl(true));
+		$this->set('url_page', $page['path']);
 
 		echo $this->sandbox($prefix, $pageFile);
 	}
