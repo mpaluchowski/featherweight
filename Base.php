@@ -103,6 +103,11 @@ class Base {
 	}
 
 	private function getCanonicalUrl($pagePath) {
+		return $this->getRootUrl(true)
+			. $pagePath;
+	}
+
+	private function getRootUrl($includePageBase = false) {
 		return $this->get('protocol_force')
 				? $this->get('protocol_force')
 				: isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']
@@ -110,8 +115,7 @@ class Base {
 						: 'http'
 			. '://'
 			. $_SERVER['HTTP_HOST']
-			. $this->get('page_base')
-			. $pagePath;
+			. ($includePageBase ? $this->get('page_base') : '/');
 	}
 
 	private function getPage() {
