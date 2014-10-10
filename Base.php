@@ -52,6 +52,10 @@ class Base {
 
 	public function config($file) {
 		$config = include $file;
+
+		if (!is_array($config))
+			throw new Exception("The configuration file $file must return an array");
+
 		foreach ($config as $key => $value) {
 			$this->config[$key] = $value;
 		}
